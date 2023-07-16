@@ -1,50 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Person'
 
-const Filter = ({ value, onChange }) => (
-  <div>
-    filter shown with <input value={value} onChange={onChange} />
-  </div>
-)
-
-const PersonForm = ({ onSubmit, nameValue, nameHandler, numberValue, numberHandler }) => (
-  <form onSubmit={onSubmit}>
-    <div>
-      name: <input value={nameValue} onChange={nameHandler} />
-    </div>
-    <div>
-      number: <input value={numberValue} onChange={numberHandler} />
-    </div>
-    <div>
-      <button
-        type="submit">add
-      </button>
-    </div>
-  </form>
-)
-
-const Person = ({ name, number }) => (
-  <div>
-    {name} {number}
-  </div>
-)
-
-const Persons = ({ personList }) => (
-  <div>
-    {personList.map(person => (
-      <Person key={person.name} name={person.name} number={person.number} />
-    ))}
-  </div>
-)
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+      })
+  }, [])
 
   const addNumbers = (event) => {
     event.preventDefault()
