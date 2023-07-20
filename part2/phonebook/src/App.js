@@ -4,12 +4,16 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import Notification from './components/Notification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [message, setMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     personService.getAll().then(initialPersons => {
@@ -31,6 +35,15 @@ const App = () => {
           setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
           setNewName('')
           setNewNumber('')
+          setMessage(`Updated ${newName}`)
+          setTimeout(() => {
+            setMessage('')
+          }, 5000);
+        }).catch(error => {
+          setErrorMessage(`Information of ${newName} has already been removed from server`)
+          setTimeout(() => {
+            setErrorMessage('')
+          }, 5000);
         })
       }
     }
@@ -39,6 +52,10 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setMessage(`Added ${newName}`)
+        setTimeout(() => {
+          setMessage('')
+        }, 5000);
       })
     }
   }
@@ -70,6 +87,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} error={false} />
+      <Notification message={errorMessage} error={true} />
       <Filter value={newFilter} onChange={handleFilter} />
       <h3>Add a new</h3>
       <PersonForm onSubmit={addNumbers} nameValue={newName} nameHandler={handleNewName} numberValue={newNumber} numberHandler={handleNewNumber} />
