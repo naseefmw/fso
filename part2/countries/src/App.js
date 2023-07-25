@@ -9,6 +9,7 @@ const App = () => {
   const [newCountry, setNewCountry] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [countryData, setCountryData] = useState({})
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     countryService.getAll().then(initialCountries => {
@@ -22,25 +23,34 @@ const App = () => {
     const filteredCountries = countries.filter(country => country.toLowerCase().includes(event.target.value))
     if (filteredCountries.length > 10) {
       setCountryData({})
-      if (event.target.value === '')
-        setSearchResults([])
+      setSearchResults([])
+      if (event.target.value !== '')
+        setMessage("Too many matches, specify another filter")
       else
-        setSearchResults(["Too many matches, specify another filter"])
+        setMessage('')
     }
     else if (filteredCountries.length === 1) {
+      setMessage('')
       setSearchResults([])
       const country = filteredCountries[0].toLowerCase()
       countryService.getCountry(country).then(country => setCountryData(country))
     }
     else {
+      setMessage('')
       setSearchResults(filteredCountries)
       setCountryData({})
     }
   }
 
+  const handleButton = (country) => {
+    console.log('clicked', country)
+    countryService.getCountry(country).then(country => setCountryData(country))
+  }
+
   return (
     <div>
-      <Search onChange={handleSearch} searchValue={newCountry} results={searchResults} />
+      <Search onChange={handleSearch} searchValue={newCountry} results={searchResults} onClick={handleButton} />
+      {message}
       <Country country={countryData} />
     </div>
   )
