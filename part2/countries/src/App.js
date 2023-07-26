@@ -20,7 +20,7 @@ const App = () => {
 
   const handleSearch = (event) => {
     setNewCountry(event.target.value)
-    const filteredCountries = countries.filter(country => country.toLowerCase().includes(event.target.value))
+    const filteredCountries = countries.filter(country => country.toLowerCase().includes(event.target.value.toLowerCase()))
     if (filteredCountries.length > 10) {
       setCountryData({})
       setSearchResults([])
