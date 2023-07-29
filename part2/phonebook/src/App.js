@@ -71,10 +71,14 @@ const App = () => {
   const handleFilter = (event) => {
     console.log(event.target.value)
     setNewFilter(event.target.value)
-    const personsFiltered = persons.filter(person => person.name.toLowerCase().includes(event.target.value))
+    const personsFiltered = persons.filter(person => person.name.toLowerCase().includes(event.target.value.toLowerCase()))
     console.log(personsFiltered)
     setPersons(personsFiltered)
-
+    if (event.target.value === '') {
+      personService.getAll().then(initialPersons => {
+        setPersons(initialPersons)
+      })
+    }
   }
   const handleDelete = (id) => {
     const personDeleted = persons.filter(person => person.id === id)
